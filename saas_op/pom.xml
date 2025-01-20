@@ -28,7 +28,7 @@
                 <version>9.4.54.v20240208</version>
                 <configuration>
                     <httpConnector>
-                        <port>8080</port>
+                        <port>8081</port>
                     </httpConnector>
                     <!--配置项目的访问根路径-->
                     <webApp>
