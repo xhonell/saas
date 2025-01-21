@@ -33,7 +33,8 @@
 	<mvc:interceptors>
 		<mvc:interceptor>
 			<mvc:mapping path="/**"/>
-			<bean class="com.xhonell.interceptor.MyInterceptor"/>
+			<mvc:exclude-mapping path="/admin/login"/>
+			<bean class="com.xhonell.interceptor.AuthInterceptor"/>
 		</mvc:interceptor>
 	</mvc:interceptors>
 
