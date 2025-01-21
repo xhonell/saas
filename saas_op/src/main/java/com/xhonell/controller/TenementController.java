@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,6 +84,12 @@ public class TenementController {
     public Result batchRemove(@RequestBody BatchRemoveDto batchRemoveDto) {
         boolean remove = tenementService.removeByIds(batchRemoveDto.getIds());
         return Result.judge(remove);
+    }
+
+    @RequestMapping(value="findAll" ,method = RequestMethod.GET)
+    public Result findAll() {
+        List<Tenement> list = tenementService.list();
+        return Result.success(list);
     }
 
 }

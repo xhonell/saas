@@ -26,6 +26,7 @@
                 <ref bean="mybatisPlusInterceptor"/>
             </array>
         </property>
+        <property name="mapperLocations" value="classpath:com/xhonell/mapper/*.xml"/>
     </bean>
 
     <!--创建Mapper接口代理对象-->

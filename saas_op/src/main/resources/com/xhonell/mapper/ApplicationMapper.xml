@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xhonell.mapper.ApplicationMapper">
+
+    <select id="findApplicationByQueryDto" parameterType="map" resultType="com.xhonell.pojo.vo.ApplicationListVo">
+        SELECT
+            op_application.id,
+            op_application.name,
+            op_application.version,
+            op_application.image,
+            op_application.hosts,
+            op_tenement.company_name,
+            op_application.status,
+            op_application.created,
+            op_application.updated
+        FROM op_application
+                 LEFT JOIN op_tenement ON op_tenement.id = op_application.tenement_id
+        <where>
+            <if test="application.name!=null and application.name!=''">
+                op_application.`name` like concat('%',#{application.name},'%')
+            </if>
+            <if test="application.status!=null">
+                op_application.`status` =#{application.status}
+            </if>
+            <if test="application.tenementId!=null">
+                and op_tenement.id=#{application.tenementId}
+            </if>
+        </where>
+    </select>
+</mapper>
