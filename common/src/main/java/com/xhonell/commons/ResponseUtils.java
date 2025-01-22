@@ -1,6 +1,7 @@
 package com.xhonell.commons;
 
 import com.xhonell.result.Result;
+import com.xhonell.result.ResultEnum;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,12 +19,12 @@ public class ResponseUtils {
     /**
      * 返回错误信息Json数据给前端
      * @param response 响应对象
-     * @param str 需要相应的数据
+     * @param resultEnum 需要相应的数据
      */
-    public static void responseToJson(HttpServletResponse response, String str) {
+    public static void responseToJson(HttpServletResponse response, ResultEnum resultEnum) {
         try {
             response.setContentType("application/json;charset=utf-8");
-            String s = JsonUtils.objectToJson(Result.fail(50000,str));
+            String s = JsonUtils.objectToJson(Result.fail(resultEnum.getCode(),resultEnum.getMessage()));
             response.getWriter().write(s);
         } catch (IOException e) {
             throw new RuntimeException("Json数据返回失败");

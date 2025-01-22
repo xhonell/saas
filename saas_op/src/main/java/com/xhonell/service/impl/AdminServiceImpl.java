@@ -10,6 +10,7 @@ import com.xhonell.mapper.AdminMapper;
 import com.xhonell.pojo.dto.AdminAddDto;
 import com.xhonell.pojo.dto.AdminLoginDto;
 import com.xhonell.pojo.entity.Admin;
+import com.xhonell.result.ResultEnum;
 import com.xhonell.service.AdminService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     public boolean insertAdmin(AdminAddDto adminAddDto) {
 
         if (adminAddDto == null) {
-            throw new BizException("用户信息不能为空");
+            throw new BizException(ResultEnum.USER_NOT_EMPTY);
         }
 
         checkUsername(adminAddDto.getUsername());
@@ -69,17 +70,17 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
      */
     @Override
     public String login(AdminLoginDto adminLoginDto) {
-        if (adminLoginDto == null) throw new BizException("账号密码不能为空");
+        if (adminLoginDto == null) throw new BizException(ResultEnum.USER_NOT_EMPTY);
 
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getUsername, adminLoginDto.getUsername());
 
         Admin admin = getBaseMapper().selectOne(queryWrapper);
-        if (admin == null) throw new BizException("账号密码错误");
+        if (admin == null) throw new BizException(ResultEnum.USERNAME_OR_PASSWORD_ERROR);
 
         String salt = admin.getSalt();
         String password = DigesterUtils.digesterPassword(adminLoginDto.getPassword(), salt);
-        if (!password.equals(admin.getPassword())) throw new BizException("账号密码错误");
+        if (!password.equals(admin.getPassword())) throw new BizException(ResultEnum.USERNAME_OR_PASSWORD_ERROR);
 
         Map<String,Object> map = new HashMap<>();
 
@@ -104,12 +105,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
      * @param username 用户名
      */
     private void checkUsername(String username) {
-        if (StrUtil.isEmpty(username)) throw new BizException("用户名不能为空");
+        if (StrUtil.isEmpty(username)) throw new BizException(ResultEnum.USER_NOT_EMPTY);
 
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getUsername, username);
         Admin admin = getBaseMapper().selectOne(queryWrapper);
-        if (admin != null) throw new BizException("用户名已经存在");
+        if (admin != null) throw new BizException(ResultEnum.USERNAME_EXITS);
     }
 
     /**
@@ -117,12 +118,12 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
      * @param email 邮箱
      */
     private void checkEmail(String email) {
-        if (StrUtil.isEmpty(email)) throw new BizException("邮箱不能为空");
+        if (StrUtil.isEmpty(email)) throw new BizException(ResultEnum.EMAIL_NOT_EMPTY);
 
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getEmail, email);
         Admin admin = getBaseMapper().selectOne(queryWrapper);
-        if (admin != null) throw new BizException("邮箱已经存在");
+        if (admin != null) throw new BizException(ResultEnum.EMAIL_EXITS);
     }
 
     /**
@@ -130,11 +131,11 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
      * @param phone 手机号
      */
     private void checkPhone(String phone) {
-        if (StrUtil.isEmpty(phone)) throw new BizException("手机号不能为空");
+        if (StrUtil.isEmpty(phone)) throw new BizException(ResultEnum.PHONE_NOT_EMPTY);
 
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getPhone, phone);
         Admin admin = getBaseMapper().selectOne(queryWrapper);
-        if (admin != null) throw new BizException("手机号已经存在");
+        if (admin != null) throw new BizException(ResultEnum.PHONE_EXITS);
     }
 }

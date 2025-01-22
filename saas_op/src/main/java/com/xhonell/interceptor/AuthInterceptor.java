@@ -8,6 +8,7 @@ import com.xhonell.commons.AdminThreadLocal;
 import com.xhonell.commons.ResponseUtils;
 import com.xhonell.commons.TokenUtils;
 import com.xhonell.result.Result;
+import com.xhonell.result.ResultEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -36,7 +37,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         //判断token是否存在
         if (StrUtil.isEmpty(token)) {
-            Result result = Result.fail(20002, "token不能为空!");
+            Result result = Result.fail(ResultEnum.TOKEN_EMPTY);
             ResponseUtils.responseToJson(httpServletResponse,result);
             log.error("token不能为空!");
             return false;
@@ -44,7 +45,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         //解析令牌
         if (!JWTUtil.verify(token, TokenUtils.KEY.getBytes())){
-            Result result = Result.fail(20003, "jwt令牌不合法!");
+            Result result = Result.fail(ResultEnum.TOKEN_VALIDATE);
             ResponseUtils.responseToJson(httpServletResponse,result);
             log.error("{}:jwt令牌不合法!",token);
             return false;
@@ -56,7 +57,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         //判断token是否失效
         if (expire.longValue() < System.currentTimeMillis()) {
-            Result result = Result.fail(20004, "登录失效!");
+            Result result = Result.fail(ResultEnum.TOKEN_EXPIRE);
             ResponseUtils.responseToJson(httpServletResponse,result);
             log.error("{}:登录失效!",token);
             return false;

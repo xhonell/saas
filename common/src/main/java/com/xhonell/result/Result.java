@@ -1,5 +1,7 @@
 package com.xhonell.result;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -10,11 +12,16 @@ import lombok.Data;
  * create: 2025年01月19日15时40分
  * Version 1.0
  **/
+@ApiModel(description = "响应的数据集")
 @Data
 public class Result <T> {
+    @ApiModelProperty("状态码")
     private Integer code;
+    @ApiModelProperty("响应消息")
     private String msg;
+    @ApiModelProperty("查询的条目数")
     private Long count;
+    @ApiModelProperty("响应的数据")
     private T data;
 
     /**
@@ -60,6 +67,10 @@ public class Result <T> {
         result.code = code;
         result.msg = msg;
         return result;
+    }
+
+    public static Result fail(ResultEnum resultEnum) {
+        return fail(resultEnum.getCode(), resultEnum.getMessage());
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.xhonell.exception;
 
 import com.xhonell.commons.ResponseUtils;
+import com.xhonell.result.ResultEnum;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -18,16 +19,16 @@ import javax.servlet.http.HttpServletResponse;
 public class ExceptionHandle implements HandlerExceptionResolver {
     @Override
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
-        String message = "";
+        ResultEnum resultEnum ;
 
         if (e instanceof BizException) {
             BizException bizException = (BizException) e;
-            message = bizException.getMessage();
+            resultEnum = bizException.getResultEnum();
         } else {
-            message = "系统异常";
+            resultEnum = ResultEnum.UNKNOWN_EXCEPTION;
         }
 
-        ResponseUtils.responseToJson(httpServletResponse, message);
+        ResponseUtils.responseToJson(httpServletResponse, resultEnum);
 
         return new ModelAndView();
     }

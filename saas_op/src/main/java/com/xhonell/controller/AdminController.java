@@ -3,12 +3,17 @@ package com.xhonell.controller;
 import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xhonell.commons.WebUtils;
 import com.xhonell.pojo.dto.*;
 import com.xhonell.pojo.entity.Admin;
 import com.xhonell.result.Result;
 import com.xhonell.service.AdminService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,6 +31,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/admin")
 @ResponseBody
+@Api("用户相关的接口文档")
 public class AdminController {
     @Autowired
     private AdminService adminService;
@@ -53,8 +59,13 @@ public class AdminController {
         return Result.success(page.getTotal(), page.getRecords());
     }
 
+    @ApiOperation(value = "添加用户的接口文档")
     @RequestMapping(value = "/add" ,method = RequestMethod.POST)
-    public Result insert(@RequestBody AdminAddDto adminAddDto) {
+    public Result insert(@RequestBody @Validated AdminAddDto adminAddDto, BindingResult bindingResult) {
+        //校验判断
+        if(bindingResult.hasErrors()){
+            return WebUtils.getResult(bindingResult);
+        }
         boolean save = adminService.insertAdmin(adminAddDto);
         return Result.judge(save);
     }
@@ -92,6 +103,7 @@ public class AdminController {
     }
 
 
+    @ApiOperation("登录接口的文档")
     @RequestMapping(value = "/login" ,method = RequestMethod.POST)
     public Result login(@RequestBody AdminLoginDto adminLoginDto) {
         String token = adminService.login(adminLoginDto);

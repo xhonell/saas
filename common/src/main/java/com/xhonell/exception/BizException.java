@@ -1,5 +1,8 @@
 package com.xhonell.exception;
 
+import com.xhonell.result.ResultEnum;
+import lombok.Data;
+
 /**
  * program: saas
  * ClassName BizException
@@ -9,19 +12,18 @@ package com.xhonell.exception;
  * Version 1.0
  **/
 public class BizException extends RuntimeException{
-    private String message;
+    private ResultEnum resultEnum;
 
-    public BizException(String message) {
-        super(message);
-        this.message = message;
+    public BizException(ResultEnum resultEnum) {
+        super(resultEnum.getMessage());
+        this.resultEnum = resultEnum;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public ResultEnum getResultEnum() {
+        return resultEnum;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setResultEnum(ResultEnum resultEnum) {
+        this.resultEnum = resultEnum;
     }
 }
