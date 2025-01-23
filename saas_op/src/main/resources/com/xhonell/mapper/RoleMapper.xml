@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xhonell.mapper.RoleMapper">
+
+    <select id="findRoleByQueryDto" parameterType="map" resultType="com.xhonell.pojo.vo.RoleListVo">
+        SELECT
+        r.id,
+        r.name,
+        GROUP_CONCAT( p.name ) AS pname,
+        r.description
+        FROM
+        op_role r
+        LEFT JOIN op_role_permission rp ON r.id = rp.role_id
+        LEFT JOIN op_permission p ON rp.permission_id = p.id
+        <where>
+            <if test="roleQueryDto.name!=null and roleQueryDto.name!=''">
+                r.name like concat( '%', #{roleQueryDto.name}, '%' )
+            </if>
+        </where>
+        GROUP BY r.id
+    </select>
+
+</mapper>

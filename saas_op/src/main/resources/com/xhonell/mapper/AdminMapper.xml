@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xhonell.mapper.AdminMapper">
+
+    <select id="findAdminByQueryDto" resultType="com.xhonell.pojo.vo.AdminListVo">
+        SELECT
+        op_admin.id,
+        op_admin.`name`,
+        GROUP_CONCAT(op_role.`name`) AS rname,
+        op_admin.phone,
+        op_admin.image,
+        op_admin.email
+        FROM op_admin
+        LEFT JOIN op_admin_role ON op_admin.id = op_admin_role.admin_id
+        LEFT JOIN op_role ON op_role.id = op_admin_role.role_id
+        <where>
+            <if test="adminQueryDto.name != null and adminQueryDto.name != ''">
+                AND op_admin.`name` LIKE CONCAT('%', #{adminQueryDto.name}, '%')
+            </if>
+            <if test="adminQueryDto.phone != null and adminQueryDto.phone != ''">
+                AND op_admin.phone = #{adminQueryDto.phone}
+            </if>
+            <if test="adminQueryDto.startTime != null">
+                AND op_admin.created &lt; #{adminQueryDto.startTime}
+            </if>
+        </where>
+        GROUP BY op_admin.id
+
+
+    </select>
+</mapper>

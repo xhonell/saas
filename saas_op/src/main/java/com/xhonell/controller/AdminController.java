@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xhonell.commons.WebUtils;
 import com.xhonell.pojo.dto.*;
 import com.xhonell.pojo.entity.Admin;
+import com.xhonell.pojo.vo.AdminListVo;
 import com.xhonell.result.Result;
 import com.xhonell.service.AdminService;
 import io.swagger.annotations.Api;
@@ -41,19 +42,11 @@ public class AdminController {
      * @param adminQueryDto
      * @return
      */
+    @ApiOperation("查询用户信息的接口文档")
     @RequestMapping(value = "/list" ,method = RequestMethod.GET)
     public Result list(AdminQueryDto adminQueryDto) {
 
-        //创建分页条件
-        Page<Admin> adminPage = new Page<>(adminQueryDto.getPage(), adminQueryDto.getLimit());
-
-        //准备查询条件
-        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.like(!StringUtils.isEmpty(adminQueryDto.getName()), Admin::getName, adminQueryDto.getName())
-                .eq(!StringUtils.isEmpty(adminQueryDto.getPhone()), Admin::getPhone, adminQueryDto.getPhone())
-                .gt(adminQueryDto.getStartTime() !=null, Admin::getCreated, adminQueryDto.getStartTime());
-
-        Page<Admin> page = adminService.page(adminPage, queryWrapper);
+        Page<AdminListVo> page = adminService.findAdminByQueryDto(adminQueryDto);
 
 
         return Result.success(page.getTotal(), page.getRecords());
@@ -109,5 +102,13 @@ public class AdminController {
         String token = adminService.login(adminLoginDto);
         return Result.success(token);
     }
+
+    @RequestMapping(value = "updateAdminRole" ,method= RequestMethod.POST)
+    public Result updateAdminRole(@RequestBody UpdateAdminRoleDto updateAdminRoleDto) {
+        adminService.updateAdminRole(updateAdminRoleDto);
+        return Result.success();
+    }
+
+
 
 }
